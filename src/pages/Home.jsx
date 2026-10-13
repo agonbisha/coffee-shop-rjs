@@ -1,0 +1,28 @@
+import { ArrowRight, Droplets, Leaf, Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { products } from '../data/products.js'
+import { reviews } from '../data/reviews.js'
+import Hero from '../components/Hero.jsx'
+import ProductGrid from '../components/ProductGrid.jsx'
+import ReviewCard from '../components/ReviewCard.jsx'
+
+const categoryCards = [
+  { title: 'Face + skin', category: 'Skincare', note: 'A considered start, and a comfortable finish.', image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=1100&q=85', number: '01' },
+  { title: 'Hair, every day', category: 'Haircare', note: 'A few good things. Room to make them yours.', image: 'https://images.unsplash.com/photo-1621607512214-68297480165e?auto=format&fit=crop&w=1100&q=85', number: '02' },
+  { title: 'The daily wash', category: 'Cleansers', note: 'The everyday essentials that earn their place.', image: 'https://images.unsplash.com/photo-1556229010-6c3f2c9ca5f8?auto=format&fit=crop&w=1100&q=85', number: '03' },
+]
+
+export default function Home() {
+  const bestSellers = products.slice(0, 4)
+  return <>
+    <Hero />
+    <main className="home-main">
+      <section className="category-section content-width"><div className="section-intro"><div><span className="eyebrow">THE EVERYDAY EDIT</span><h2>Care for the<br /><em>whole picture.</em></h2></div><p>Good essentials. No twelve-step ritual required. Find the pieces that make your routine feel like yours.</p></div><div className="category-grid">{categoryCards.map((card) => <Link className="category-card" to={`/shop/${card.category}`} key={card.number}><img src={card.image} alt="" loading="lazy" /><span className="category-num">{card.number} <i> / 03</i></span><span className="category-overlay"><small>{card.category.toUpperCase()}</small><strong>{card.title}</strong><span>{card.note}</span><b>EXPLORE <ArrowRight size={13} /></b></span></Link>)}</div></section>
+      <section className="bestseller-section"><div className="content-width"><div className="section-heading"><div><span className="eyebrow">THE USUAL FAVORITES</span><h2>Good on repeat.</h2></div><Link className="underlined-link" to="/shop">Shop everything <ArrowRight size={15} /></Link></div><ProductGrid products={bestSellers} /></div></section>
+      <section className="philosophy-section" id="philosophy"><div className="philosophy-photo"><img src="https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1200&q=85" alt="Simple body care products on a neutral surface" loading="lazy" /><span>THE LESS, BETTER APPROACH</span></div><div className="philosophy-copy"><span className="eyebrow">A LITTLE LESS, A LOT MORE THOUGHT</span><h2>Good care.<br /><em>Less noise.</em></h2><p>We think daily care should feel thoughtful, not like homework. Based Bodyworks is a fictional student brand concept built around clear product information, familiar ingredients, and routines that leave room for real life.</p><div className="principle-list"><article><span><Leaf size={17} /></span><div><strong>Know what’s in it</strong><p>Ingredients presented clearly, so choosing feels simple.</p></div></article><article><span><Droplets size={17} /></span><div><strong>Keep the routine easy</strong><p>Everyday essentials designed to work well together.</p></div></article><article><span><Sparkles size={17} /></span><div><strong>Make it your own</strong><p>Pick the steps that fit you, and leave the rest.</p></div></article></div><Link className="text-arrow" to="/about">A little more about us <ArrowRight size={14} /></Link></div></section>
+      <section className="ingredients-section content-width" id="ingredients"><div className="ingredient-copy"><span className="eyebrow">GOOD TO KNOW</span><h2>Nothing to hide.<br /><em>Nothing to decode.</em></h2><p>This student demo uses illustrative, fictional formulas. Each product page lists sample ingredients for the project only; always consult real product labels when making personal-care choices.</p><Link className="underlined-link" to="/about#ingredients">Our ingredient approach <ArrowRight size={14} /></Link></div><div className="ingredient-art"><div className="ingredient-ring"><span>THE<br />GOOD<br /><b>STUFF</b></span></div><div className="ingredient-note ingredient-note-one">CLEAR LABELS <i>↗</i></div><div className="ingredient-note ingredient-note-two">NO BIG PROMISES <i>↗</i></div><span className="ingredient-orbit">BASED / DAILY FORMULA NO. 01</span></div></section>
+      <section className="reviews-section"><div className="content-width"><div className="section-heading"><div><span className="eyebrow">A FEW GOOD WORDS</span><h2>The routine, in real life.</h2></div><div className="review-score"><b>4.8</b><span><i>★★★★★</i><small>FROM OUR SAMPLE REVIEWS</small></span></div></div><div className="review-grid">{reviews.slice(0, 3).map((review) => <ReviewCard review={review} key={review.name} />)}</div><p className="fiction-note">Fictional sample testimonials created for this educational project.</p></div></section>
+      <section className="quiz-promo"><div className="quiz-promo-image" /><div className="quiz-promo-content"><span className="eyebrow">NOT SURE WHERE TO START?</span><h2>Find your kind<br />of <em>everyday.</em></h2><p>Four quick questions. A few thoughtful places to begin.</p><Link className="button button-cream" to="/quiz">Take the routine quiz <ArrowRight size={15} /></Link></div><span className="promo-number">02</span></section>
+    </main>
+  </>
+}

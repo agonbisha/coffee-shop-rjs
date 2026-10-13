@@ -1,0 +1,12 @@
+import { ArrowRight, ArrowUpRight, LockKeyhole, ShoppingBag } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { useCart } from '../context/CartContext.jsx'
+import CartItem from '../components/CartItem.jsx'
+
+export default function Cart() {
+  const { items, subtotal, shipping, total, updateQuantity, removeItem, clearCart } = useCart()
+  const remaining = Math.max(75 - subtotal, 0)
+  return <main className="cart-page content-width"><header className="page-title-row"><div><span className="eyebrow">YOUR EVERYDAY EDIT</span><h1>Your bag<span className="title-period">.</span></h1><p>{items.length ? `${items.reduce((sum, item) => sum + item.quantity, 0)} considered essential${items.reduce((sum, item) => sum + item.quantity, 0) === 1 ? '' : 's'}` : 'Room for something good.'}</p></div>{items.length > 0 && <button className="clear-cart-button" type="button" onClick={clearCart}>CLEAR BAG <ArrowUpRight size={13} /></button>}</header>
+    {items.length ? <div className="cart-layout"><section className="cart-lines"><div className="shipping-progress"><span>{remaining ? `You’re $${remaining.toFixed(2)} away from complimentary shipping.` : 'Complimentary shipping is on us.'}</span><div><i style={{ width: `${Math.min((subtotal / 75) * 100, 100)}%` }} /></div></div><div className="cart-items">{items.map((item) => <CartItem item={item} key={item.id} onQuantity={updateQuantity} onRemove={removeItem} />)}</div><Link className="underlined-link" to="/shop">Continue browsing <ArrowRight size={14} /></Link></section><aside className="order-summary"><span className="eyebrow">THE TOTAL</span><h2>Order summary</h2><div><span>Subtotal</span><b>${subtotal.toFixed(2)}</b></div><div><span>Shipping</span><b>{shipping === 0 ? 'Complimentary' : `$${shipping.toFixed(2)}`}</b></div>{shipping > 0 && <small>Free shipping on orders over $75.</small>}<div className="summary-total"><span>Total</span><strong>${total.toFixed(2)} <small>USD</small></strong></div><Link className="button button-dark checkout-button" to="/checkout">Continue to checkout <ArrowRight size={15} /></Link><p><LockKeyhole size={13} /> DEMO CHECKOUT · NO PAYMENT TAKEN</p></aside></div> : <section className="cart-empty"><span className="empty-bag"><ShoppingBag size={24} /></span><h2>Nothing in your bag. Yet.</h2><p>The best routines start with one good thing.</p><Link className="button button-dark" to="/shop">Find your everyday <ArrowRight size={15} /></Link></section>}
+  </main>
+}

@@ -1,0 +1,25 @@
+import { useState } from 'react'
+import { ArrowLeft, Minus, Plus, ShieldCheck, ShoppingBag } from 'lucide-react'
+import { Link, useParams } from 'react-router-dom'
+import { findProduct, products } from '../data/products.js'
+import { reviews } from '../data/reviews.js'
+import { useCart } from '../context/CartContext.jsx'
+import ProductGrid from '../components/ProductGrid.jsx'
+import ReviewCard from '../components/ReviewCard.jsx'
+import WishlistButton from '../components/WishlistButton.jsx'
+
+const tabs = ['DETAILS', 'INGREDIENTS', 'HOW TO USE', 'REVIEWS']
+
+export default function Product() {
+  const { id } = useParams()
+  const product = findProduct(id)
+  const { addItem } = useCart()
+  const [quantity, setQuantity] = useState(1)
+  const [activeTab, setActiveTab] = useState('DETAILS')
+  const [added, setAdded] = useState(false)
+  if (!product) return <main className="not-found content-width"><span className="eyebrow">NOT ON THIS SHELF</span><h1>We couldn’t find that one.</h1><Link className="underlined-link" to="/shop"><ArrowLeft size={14} /> Back to the collection</Link></main>
+  const related = products.filter((item) => item.id !== product.id && item.categories.some((category) => product.categories.includes(category))).slice(0, 4)
+  const productReviews = reviews.filter((review) => review.product === product.name)
+  const add = () => { addItem(product, quantity); setAdded(true) }
+  return <main className="product-page content-width"><div className="breadcrumbs"><Link to="/shop">SHOP</Link><span>/</span><span>{product.categoryLabel}</span><span>/</span><span>{product.name}</span></div><section className="product-detail"><div className="product-gallery"><div className="product-detail-image" style={{ backgroundColor: product.swatch }}><img src={product.image} alt={`${product.name} product`} /></div><div className="gallery-caption"><span>BASED / DAILY ESSENTIALS</span><span>01 — 01</span></div></div><div className="product-information"><span className="eyebrow">{product.categoryLabel} · {product.size}</span><h1>{product.name}</h1><div className="detail-rating"><span>★★★★★</span><b>{product.rating.toFixed(1)}</b><a href="#reviews">({product.reviewCount} reviews)</a></div><p className="detail-price">${product.price.toFixed(2)} <small>USD</small></p><p className="detail-description">{product.description}</p><p className="detail-note"><ShieldCheck size={15} /> Factual product information is fictional sample content for this student project.</p><div className="purchase-controls"><div className="detail-quantity"><button type="button" onClick={() => setQuantity((value) => Math.max(1, value - 1))} aria-label="Decrease quantity"><Minus size={14} /></button><span>{quantity}</span><button type="button" onClick={() => setQuantity((value) => value + 1)} aria-label="Increase quantity"><Plus size={14} /></button></div><button className={`button button-dark add-to-bag${added ? ' is-added' : ''}`} type="button" onClick={add}>{added ? 'ADDED TO BAG' : 'ADD TO BAG'}<ShoppingBag size={15} /></button></div><div className="detail-wishlist"><WishlistButton product={product} /> <span>Complimentary shipping over $75</span></div><div className="product-tabs"><div className="tab-list" role="tablist">{tabs.map((tab) => <button type="button" key={tab} role="tab" aria-selected={activeTab === tab} className={activeTab === tab ? 'is-active' : ''} onClick={() => setActiveTab(tab)}>{tab}</button>)}</div><div className="tab-panel" role="tabpanel">{activeTab === 'DETAILS' && <p>{product.description} Made for simple, considered everyday use. Size: {product.size}.</p>}{activeTab === 'INGREDIENTS' && <><p>Sample ingredient list, for project demonstration only:</p><ul>{product.ingredients.map((ingredient) => <li key={ingredient}>{ingredient}</li>)}</ul></>}{activeTab === 'HOW TO USE' && <p>{product.use}</p>}{activeTab === 'REVIEWS' && <p>{productReviews.length ? `${productReviews.length} fictional sample review${productReviews.length > 1 ? 's' : ''} for this item.` : 'No sample reviews for this item yet. Browse the customer notes below.'}</p>}</div></div></div></section><section className="product-reviews" id="reviews"><div className="section-heading"><div><span className="eyebrow">THE WORD ON IT</span><h2>Customer notes.</h2></div><span className="review-score"><b>{product.rating.toFixed(1)}</b><i>★★★★★</i></span></div>{productReviews.length ? <div className="review-grid">{productReviews.map((review) => <ReviewCard review={review} key={review.name} />)}</div> : <p className="demo-note">No sample reviews are attached to this product yet. Reviews on this site are fictional demo content.</p>}</section>{related.length > 0 && <section className="related-products"><div className="section-heading"><div><span className="eyebrow">KEEP IT IN THE FAMILY</span><h2>Good alongside.</h2></div></div><ProductGrid products={related} /></section>}</main>
+}
