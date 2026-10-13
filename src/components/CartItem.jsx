@@ -1,0 +1,6 @@
+import { Minus, Plus, X } from 'lucide-react'
+import { Link } from 'react-router-dom'
+
+export default function CartItem({ item, onQuantity, onRemove }) {
+  return <article className="cart-item"><Link to={`/product/${item.id}`} className="cart-item-image"><img src={item.image} alt={item.name} /></Link><div className="cart-item-main"><Link to={`/product/${item.id}`}><h3>{item.name}</h3></Link><span>{item.size} · {item.categoryLabel}</span><div className="quantity-control"><button type="button" aria-label={`Decrease ${item.name} quantity`} onClick={() => onQuantity(item.id, item.quantity - 1)}><Minus size={13} /></button><span>{item.quantity}</span><button type="button" aria-label={`Increase ${item.name} quantity`} onClick={() => onQuantity(item.id, item.quantity + 1)}><Plus size={13} /></button></div></div><div className="cart-item-total"><strong>${(item.price * item.quantity).toFixed(2)}</strong><button type="button" className="remove-item" onClick={() => onRemove(item.id)} aria-label={`Remove ${item.name}`}><X size={15} /></button></div></article>
+}
